@@ -13,16 +13,15 @@ def query_movies():
         data = request.get_json()
         db = data.get('db')
         collection_name = data.get('collection')
-        queries = data.get('queries', []) 
+        query = data.get('query', []) 
 
         collection = db[collection_name]
-        results = []
+        result = []
 
-        for query in queries:
-            query_results = list(collection.find(query, {"_id": 0}))  
-            results.append(query_results)  
+        query_result = list(collection.find(query, {"_id": 0}))  
+        result.append(query_result)  
 
-        return jsonify(results), 200 
+        return jsonify(result), 200 
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
