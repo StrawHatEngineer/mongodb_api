@@ -16,12 +16,9 @@ def query_movies():
         query = data.get('query') 
 
         collection = db[collection_name]
-        result = []
 
         query_result = list(collection.find(query, {"_id": 0}))  
-        result.append(query_result)  
-
-        return jsonify(result), 200 
+        return jsonify(query_result), 200 
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
