@@ -9,11 +9,11 @@ client = MongoClient("mongodb+srv://admin:admin@instabase.svzbc.mongodb.net/?ret
 @app.route('/query', methods=['POST'])
 def query_movies():
     try:
-        
         data = request.get_json()
-        db = data.get('db')
+
+        db = client[data.get('db')]
         collection_name = data.get('collection')
-        query = data.get('query', []) 
+        query = data.get('query') 
 
         collection = db[collection_name]
         result = []
@@ -21,7 +21,10 @@ def query_movies():
         query_result = list(collection.find(query, {"_id": 0}))  
         result.append(query_result)  
 
-        return jsonify(result), 200 
+        return jsonify({
+            "query": query,
+            "results": result
+        }), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

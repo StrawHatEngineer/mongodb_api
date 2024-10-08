@@ -22,5 +22,6 @@ movies_collection = db["movies"]
 
 # movies_collection.insert_many(sample_movies)
 
-query = {"release_year": { "$gt": 2000 }, "runtime": { "$gt": 120 }}
-movies_collection.find(query)
+query = {'genres': {'$all': ['Action', 'Adventure']}}
+result = list(movies_collection.find(query))
+print(result)
