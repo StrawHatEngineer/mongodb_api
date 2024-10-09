@@ -18,30 +18,21 @@ def query_movies():
 
         collection = db[collection_name]
 
-        collection_method = getattr(collection, query_type)
+        if 'find' in query_type:
+            if limit > 0:
+                query_result = list(collection.find(query, {"_id": 0}).limit(limit))
+            else:
+                query_result = list(collection.find(query, {"_id": 0}))
+            return jsonify(query_result), 200 
 
-        # if query_type == 'find':
-        #     if limit > 0:
-        #         query_result = list(collection.${query_type}(query, {"_id": 0}).limit(limit))
-        #     else:
-        #         query_result = list(collection.find(query, {"_id": 0}))
-        #     return jsonify(query_result), 200 
+        elif query_type == 'aggregate':
+            if limit > 0:
+                query.append({"$limit": limit})  
+            query_result = list(collection.aggregate(query))
+            return jsonify(query_result), 200 
 
-        # elif query_type == 'aggregate':
-        #     if limit > 0:
-        #         query.append({"$limit": limit})  
-        #     query_result = list(collection.aggregate(query))
-        #     return jsonify(query_result), 200 
-
-        # else:
-        #     return jsonify({"error": "Invalid query type. Use 'find' or 'aggregate'."}), 400 
-        
-        if limit > 0:
-            query_result = list(collection_method(query, {"_id": 0}).limit(limit))
         else:
-            query_result = list(collection_method(query, {"_id": 0}))
-        
-        return jsonify(query_result), 200 
+            return jsonify({"error": "Invalid query type. Use 'find' or 'aggregate'."}), 400 
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
