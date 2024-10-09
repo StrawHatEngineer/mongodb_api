@@ -12,19 +12,23 @@ def query_movies():
 
         db = client[data.get('db')]
         collection_name = data.get('collection')
-        query_type = data.get('type of query')  # Added query_type
+        query_type = data.get('type of query')  
         query = data.get('query') 
+        limit = data.get('limit', 0) 
 
         collection = db[collection_name]
 
         if query_type == 'find':
-            # Execute a find query
-            query_result = list(collection.find(query, {"_id": 0}))  
+            if limit > 0:
+                query_result = list(collection.find(query, {"_id": 0}).limit(limit))
+            else:
+                query_result = list(collection.find(query, {"_id": 0}))
             return jsonify(query_result), 200 
 
         elif query_type == 'aggregate':
-            # Execute an aggregate query
-            query_result = list(collection.aggregate(query))  # No need to filter out _id here
+            if limit > 0:
+                query.append({"$limit": limit})  
+            query_result = list(collection.aggregate(query))
             return jsonify(query_result), 200 
 
         else:
