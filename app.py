@@ -11,10 +11,16 @@ def query_movies():
         data = request.get_json()
 
         db = client[data.get('db')]
-        collection_name = data.get('collection')
         query_type = data.get('type of query')  
         query = data.get('query') 
-        limit = data.get('limit', 0)  # Get the limit from the request, default to 0 if not provided
+        limit = data.get('limit', 0)  
+
+        if query_type == 'listCollections':
+            collection_names = db.list_collection_names()
+            return jsonify({"collections": collection_names}), 200
+        
+        collection_name = data.get('collection')
+        collection = db[collection_name]
 
         collection = db[collection_name]
 
