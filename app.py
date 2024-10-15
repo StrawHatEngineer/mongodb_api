@@ -10,9 +10,9 @@ def query_movies():
     try:
         data = request.get_json()
 
-        db = client[data.get('db')]
-        query_type = data.get('type of query')  
-        query = data.get('query') 
+        db = client[data.get('db', "demo_db")]
+        query_type = data.get('type of query', 'find')  
+        query = data.get('query', {}) 
         limit = data.get('limit', 0)  
 
         if query_type == 'listCollections':
