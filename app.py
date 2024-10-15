@@ -21,21 +21,12 @@ def query_movies():
         limit = data.get('limit', 0)  
         collection_name = data.get('collection', None)
 
-        # Validate essential fields
-        if not db_name:
-            return jsonify({"error": "Database name ('db') is required."}), 400
         db = client[db_name]
-
-        if not query_type:
-            return jsonify({"error": "Query type ('query_type') is required."}), 400
         
          # Handle listing of collections
         if query_type == 'listCollections':
             collection_names = db.list_collection_names()
             return jsonify({"collections": collection_names}), 200
-        
-        if not query:
-            return jsonify({"error": "Query ('query') is required."}), 400
         
         
         # Dynamic handling across collections if not specified
